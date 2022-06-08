@@ -1,0 +1,7 @@
+query StopPlacesList($ids: [String!]!) {
+  stopPlaces(ids: $ids) {
+    name
+    id
+    transportMode
+  }
+}

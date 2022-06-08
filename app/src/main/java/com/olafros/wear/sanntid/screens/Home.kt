@@ -1,20 +1,25 @@
 package com.olafros.wear.sanntid.screens
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.wear.compose.material.*
 import com.example.android.wearable.composestarter.R
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Done
-import androidx.compose.material.icons.rounded.FavoriteBorder
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import com.olafros.wear.sanntid.utils.Constants
 
 @Composable
@@ -31,18 +36,9 @@ fun Home(navController: NavHostController) {
             item {
                 Item(
                     navController,
-                    "Test",
-                    rememberVectorPainter(Icons.Rounded.Done),
-//                     "${Constants.Navigation.DEPARTURES}/58366"
-                     "${Constants.Navigation.DEPARTURES}/NSR:StopPlace:59872"
-                )
-            }
-            item {
-                Item(
-                    navController,
                     "Søk",
                     rememberVectorPainter(Icons.Rounded.Search),
-                     Constants.Navigation.SEARCH
+                    Constants.Navigation.SEARCH
                 )
             }
             item {
@@ -50,8 +46,7 @@ fun Home(navController: NavHostController) {
                     navController,
                     "Favoritter",
                     rememberVectorPainter(Icons.Rounded.FavoriteBorder),
-                    null
-                    // Constants.Navigation.FAVOURITES
+                    Constants.Navigation.FAVOURITES
                 )
             }
             item {
@@ -61,6 +56,14 @@ fun Home(navController: NavHostController) {
                     painterResource(R.drawable.ic_round_my_location_24),
                     null
                     // Constants.Navigation.NEARBY
+                )
+            }
+            item {
+                Text(
+                    "All data hentes fra Entur",
+                    fontSize = 10.sp,
+                    color = Color.Gray,
+                    modifier = Modifier.padding(top = 10.dp)
                 )
             }
         }

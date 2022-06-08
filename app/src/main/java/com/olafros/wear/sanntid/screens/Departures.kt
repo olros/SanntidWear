@@ -3,10 +3,12 @@ package com.olafros.wear.sanntid.screens
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -19,6 +21,8 @@ import androidx.wear.compose.foundation.CurvedTextStyle
 import androidx.wear.compose.material.*
 import com.olafros.wear.sanntid.DeparturesListQuery
 import com.olafros.wear.sanntid.apolloClient
+import com.olafros.wear.sanntid.utils.Constants
+import com.olafros.wear.sanntid.utils.SharedPreferencesManager
 import kotlinx.coroutines.*
 import java.text.DateFormat
 import java.text.ParseException
@@ -104,17 +108,7 @@ fun Departures(
             if (!isLoading) {
                 item {
                     ListHeader {
-                        CompactButton(
-                            onClick = { /* TODO: Navigate to quay-page */ },
-                            colors = ButtonDefaults.iconButtonColors()
-                        ) {
-                            Icon(
-                                Icons.Rounded.FavoriteBorder, contentDescription = "Favoritt",
-                                modifier = Modifier
-                                    .size(ButtonDefaults.SmallIconSize)
-                                    .wrapContentSize(align = Alignment.Center)
-                            )
-                        }
+                        Favourite(viewModel.data!!)
                     }
                 }
             }
@@ -195,7 +189,7 @@ fun DepartureTime(departure: DeparturesListQuery.EstimatedCall) {
         if (departure.expectedDepartureTime is String) {
             "${if (departure.realtime) "" else "ca. "}${getFormattedRelativeTime(departure.expectedDepartureTime)}"
         } else "--:--",
-        color = MaterialTheme.colors.onSecondary,
+//        color = MaterialTheme.colors.onSecondary,
         fontSize = 13.sp
     )
 }
@@ -214,5 +208,35 @@ private fun getFormattedRelativeTime(departureTime: String): String {
     } catch (e: ParseException) {
         e.printStackTrace()
         "--:--"
+    }
+}
+
+@Composable
+fun Favourite(stopPlace: DeparturesListQuery.Data) {
+    val stopPlaceId = stopPlace.stopPlace!!.id
+    val sharedPreferencesManager = SharedPreferencesManager(LocalContext.current, Constants.Favourites.KEY, Constants.Favourites.DEFAULT)
+    var isFavourite by remember { mutableStateOf(sharedPreferencesManager.getStringArray().contains(stopPlaceId)) }
+
+    fun toggleFavourite() {
+        if (isFavourite) {
+            sharedPreferencesManager.setStringArray(sharedPreferencesManager.getStringArray().filter { it != stopPlaceId })
+        } else {
+            val currentFavourites = sharedPreferencesManager.getStringArray().toMutableList()
+            currentFavourites.add(stopPlaceId)
+            sharedPreferencesManager.setStringArray(currentFavourites)
+        }
+        isFavourite = !isFavourite
+    }
+
+    CompactButton(
+        onClick = { toggleFavourite() },
+        colors = ButtonDefaults.iconButtonColors()
+    ) {
+        Icon(
+            if (isFavourite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder, contentDescription = "Favoritt",
+            modifier = Modifier
+                .size(ButtonDefaults.SmallIconSize)
+                .wrapContentSize(align = Alignment.Center)
+        )
     }
 }

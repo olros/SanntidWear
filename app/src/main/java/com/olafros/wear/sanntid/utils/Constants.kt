@@ -8,5 +8,9 @@ object Constants {
         const val FAVOURITES = "favourites"
         const val NEARBY = "nearby"
     }
-    val ETClientName = "com_olafros-wear_sanntid"
+    const val ETClientName = "com_olafros-wear_sanntid"
+    object Favourites {
+        const val KEY = "FAVOURITE_STOP_PLACES"
+        const val DEFAULT = "[]"
+    }
 }

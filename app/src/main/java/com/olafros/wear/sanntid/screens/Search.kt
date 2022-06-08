@@ -16,7 +16,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
@@ -24,7 +23,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.wear.compose.material.*
+import com.olafros.wear.sanntid.components.StopPlaceChip
 import com.olafros.wear.sanntid.utils.Constants
+import com.olafros.wear.sanntid.utils.venueMapper
 import kotlinx.coroutines.launch
 import okhttp3.*
 import org.json.JSONObject
@@ -67,9 +68,23 @@ class SearchViewModel : ViewModel() {
                             val properties = features.getJSONObject(it).getJSONObject("properties")
                             val id = properties.getString("id")
                             val label = properties.getString("label")
-                            val categories = properties.getJSONArray("category")
+                            val category = properties.getJSONArray("category")
 
-                            data.add(SearchResult(label, id, listOf()))
+                            val categories = mutableListOf<String>()
+                            (0 until category.length()).forEach { cat ->
+                                categories.add(
+                                    category.getString(
+                                        cat
+                                    )
+                                )
+                            }
+
+                            data.add(
+                                SearchResult(
+                                    label,
+                                    id,
+                                    categories.map { cat -> venueMapper(cat) }.distinct())
+                            )
                         }
                     }
                 }
@@ -133,7 +148,7 @@ fun Search(
             }
             if (!viewModel.isLoading) {
                 items(viewModel.data) {
-                    StopPlaceChip(navController, it)
+                    StopPlaceChip(navController, it.id, it.name, it.categories.joinToString(", "))
                 }
             }
             if (viewModel.isLoading) {
@@ -143,28 +158,4 @@ fun Search(
             }
         }
     }
-}
-
-@Composable
-fun StopPlaceChip(navController: NavHostController, searchResult: SearchResult) {
-    Chip(
-        modifier = Modifier
-            .fillMaxWidth(),
-        onClick = { navController.navigate("${Constants.Navigation.DEPARTURES}/${searchResult.id}") },
-        enabled = true,
-        secondaryLabel = { Text("Buss, T-Bane, Trikk") },
-        label = {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    searchResult.name,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    fontSize = 13.sp
-                )
-            }
-        }
-    )
 }

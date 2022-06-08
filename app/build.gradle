@@ -76,6 +76,7 @@ dependencies {
 
     // State
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
+    implementation 'androidx.preference:preference-ktx:1.2.0'
 
     // Icons
     implementation "androidx.compose.material:material-icons-core:1.2.0-beta03"
