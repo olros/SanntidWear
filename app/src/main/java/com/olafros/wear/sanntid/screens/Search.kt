@@ -44,7 +44,7 @@ class SearchViewModel : ViewModel() {
 
             val request = Request.Builder()
                 .url("$ENTUR_API_URL/geocoder/v1/autocomplete?lang=no&size=25&text=$input&layers=venue")
-                .header("ET-Client-Name", Constants.ETClientName)
+                .header(Constants.ENTUR_HEADER_KEY, Constants.ENTUR_HEADER_VALUE)
                 .build()
 
             OkHttpClient().newCall(request).enqueue(object : Callback {

@@ -12,8 +12,19 @@ import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.Text
 import com.olafros.wear.sanntid.utils.Constants
 
+/**
+ * Necessary data needed to render a StopPlaceChip
+ * @param id Id of StopPlace
+ * @param label Label of Chip
+ * @param secondaryLabel Optional SecondaryLabel of Chip
+ */
 data class StopPlaceChipData(val id: String, val label: String, val secondaryLabel: String?)
 
+/**
+ * StopPlaceChip renders a Material Chip which redirects the user to the StopPlace's departments on click.
+ * @param navController A NavHostController
+ * @param data StopPlaceChipData
+ */
 @Composable
 fun StopPlaceChip(navController: NavHostController, data: StopPlaceChipData) {
     Chip(

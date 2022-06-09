@@ -91,7 +91,7 @@ class NearbyViewModel : ViewModel() {
         viewModelScope.launch {
             val request = Request.Builder()
                 .url("$ENTUR_API_URL/geocoder/v1/reverse?point.lat=${location.latitude}&point.lon=${location.longitude}&lang=no&size=25&layers=venue")
-                .header("ET-Client-Name", Constants.ETClientName)
+                .header(Constants.ENTUR_HEADER_KEY, Constants.ENTUR_HEADER_VALUE)
                 .build()
 
             OkHttpClient().newCall(request).enqueue(object : Callback {

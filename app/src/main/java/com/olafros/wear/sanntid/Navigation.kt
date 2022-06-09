@@ -10,6 +10,9 @@ import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.olafros.wear.sanntid.screens.*
 import com.olafros.wear.sanntid.utils.Constants
 
+/**
+ * Controls the routes of the application and arguments for different screens
+ */
 @Composable
 fun Navigation() {
     val navController = rememberSwipeDismissableNavController()
@@ -31,17 +34,13 @@ fun Navigation() {
         }
         composable(
             route = "${Constants.Navigation.DEPARTURES}/{Id}",
-            arguments = listOf(
-                navArgument("Id") {
-                    type = NavType.StringType
-                }
-            )
+            arguments = listOf(navArgument("Id") { type = NavType.StringType })
         ) { backStackEntry ->
             val itemId = backStackEntry.arguments?.getString("Id")
             if (itemId != null) {
                 Departures(navController = navController, id = itemId)
             } else {
-                Text("No gikk galt")
+                Text("Noe gikk galt")
             }
         }
     }

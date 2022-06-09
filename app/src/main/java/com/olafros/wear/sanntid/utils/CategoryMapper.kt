@@ -2,8 +2,12 @@ package com.olafros.wear.sanntid.utils
 
 import com.olafros.wear.sanntid.type.TransportMode
 
-fun venueMapper(category: String): String =
-    when (category) {
+/**
+ * Maps a venue to a readable Norwegian string
+ * @return Readable string
+ */
+fun venueMapper(venue: String): String =
+    when (venue) {
         "railStation" -> "Tog"
         "onstreetTram" -> "Trikk"
         "tramStation" -> "Trikk"
@@ -19,8 +23,12 @@ fun venueMapper(category: String): String =
         else -> "Ukjent"
     }
 
-fun transportModeMapper(category: TransportMode): String =
-    when (category) {
+/**
+ * Maps a transportMode to a readable Norwegian string
+ * @return Readable string
+ */
+fun transportModeMapper(transportMode: TransportMode): String =
+    when (transportMode) {
         TransportMode.funicular -> "Kabelbane"
         TransportMode.tram -> "Trikk"
         TransportMode.air -> "Fly"
