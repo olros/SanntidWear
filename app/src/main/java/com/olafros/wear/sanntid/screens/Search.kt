@@ -1,21 +1,16 @@
 package com.olafros.wear.sanntid.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import android.app.RemoteInput
+import android.content.Intent
+import android.os.Bundle
+import android.view.inputmethod.EditorInfo
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
@@ -23,6 +18,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.wear.compose.material.*
+import androidx.wear.input.RemoteInputIntentHelper
+import androidx.wear.input.wearableExtender
 import com.olafros.wear.sanntid.components.StopPlaceChip
 import com.olafros.wear.sanntid.components.StopPlaceChipData
 import com.olafros.wear.sanntid.utils.Constants
@@ -38,7 +35,6 @@ import java.io.IOException
 class SearchViewModel : ViewModel() {
 
     var isLoading by mutableStateOf(false)
-    var searchInputState by mutableStateOf(TextFieldValue())
     var data = mutableStateListOf<StopPlaceChipData>()
         private set
 
@@ -92,13 +88,19 @@ fun Search(
     navController: NavHostController,
     viewModel: SearchViewModel = viewModel()
 ) {
-    val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
+    var searchInput by remember { mutableStateOf("") }
 
-    fun onSearch() {
-        viewModel.search(viewModel.searchInputState.text)
-        focusManager.clearFocus()
-    }
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            it.data?.let { data ->
+                val results: Bundle = RemoteInput.getResultsFromIntent(data)
+                val input = results.getCharSequence("search")
+                if (input != null) {
+                    searchInput = input.toString()
+                    viewModel.search(searchInput)
+                }
+            }
+        }
 
     Scaffold {
         ScalingLazyColumn(
@@ -106,30 +108,24 @@ fun Search(
         ) {
             item {
                 ListHeader {
-                    BasicTextField(
-                        keyboardActions = KeyboardActions(onSearch = { onSearch() }),
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                        singleLine = true,
-                        value = viewModel.searchInputState,
-                        onValueChange = { viewModel.searchInputState = it },
-                        decorationBox = {
-                            Row(
-                                Modifier
-                                    .background(
-                                        MaterialTheme.colors.primary,
-                                        RoundedCornerShape(percent = 50)
-                                    )
-                                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                                    .focusRequester(focusRequester)
-                            ) {
-                                Icon(Icons.Rounded.Search, contentDescription = null)
-                                Spacer(Modifier.width(16.dp))
-                                Text(
-                                    if (viewModel.searchInputState.text == "") "Søk" else viewModel.searchInputState.text,
-                                    modifier = Modifier.padding(top = 2.dp),
-                                    color = Color.White
-                                )
-                            }
+                    Chip(
+                        icon = { Icon(Icons.Rounded.Search, contentDescription = null) },
+                        label = { Text(if (searchInput == "") "Søk" else searchInput) },
+                        onClick = {
+                            val intent: Intent =
+                                RemoteInputIntentHelper.createActionRemoteInputIntent();
+                            val remoteInputs: List<RemoteInput> = listOf(
+                                RemoteInput.Builder("search")
+                                    .setLabel("Søk")
+                                    .wearableExtender {
+                                        setInputActionType(EditorInfo.IME_ACTION_SEARCH)
+                                        setEmojisAllowed(false)
+                                    }
+                                    .build()
+                            )
+
+                            RemoteInputIntentHelper.putRemoteInputsExtra(intent, remoteInputs)
+                            launcher.launch(intent)
                         }
                     )
                 }
@@ -137,7 +133,7 @@ fun Search(
             if (!viewModel.isLoading && viewModel.data.isEmpty()) {
                 item {
                     Text(
-                        if (viewModel.searchInputState.text == "") "Søk etter stoppesteder og se de neste avgangene derifra" else "Søket ditt ga ingen resultater, prøv igjen med andre søkeord",
+                        if (searchInput == "") "Søk etter stoppesteder og se de neste avgangene derifra" else "Søket ditt ga ingen resultater, prøv igjen med andre søkeord",
                         textAlign = TextAlign.Center
                     )
                 }
