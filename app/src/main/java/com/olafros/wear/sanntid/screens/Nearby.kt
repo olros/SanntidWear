@@ -138,7 +138,7 @@ class NearbyViewModel : ViewModel() {
 }
 
 private fun formatDistance(distance: Double): String =
-    if (distance < 1) "${distance * 1000} m" else "${String.format(" % .2f", distance)} km"
+    if (distance < 1) "${String.format("%.0f", distance * 1000)} m" else "${String.format("%.2f", distance)} km"
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -157,7 +157,7 @@ fun Nearby(navController: NavHostController, viewModel: NearbyViewModel = viewMo
         ScalingLazyColumn(modifier = Modifier.fillMaxWidth()) {
             item {
                 ListHeader {
-                    Text("I nærheten")
+                    Text("I nærheten", style = MaterialTheme.typography.title1)
                 }
             }
             if (!locationPermissionsState.allPermissionsGranted) {

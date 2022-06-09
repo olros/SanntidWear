@@ -12,12 +12,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -116,7 +116,7 @@ fun Search(
                             Row(
                                 Modifier
                                     .background(
-                                        MaterialTheme.colors.secondary,
+                                        MaterialTheme.colors.primary,
                                         RoundedCornerShape(percent = 50)
                                     )
                                     .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -124,7 +124,11 @@ fun Search(
                             ) {
                                 Icon(Icons.Rounded.Search, contentDescription = null)
                                 Spacer(Modifier.width(16.dp))
-                                Text(if (viewModel.searchInputState.text == "") "Søk" else viewModel.searchInputState.text)
+                                Text(
+                                    if (viewModel.searchInputState.text == "") "Søk" else viewModel.searchInputState.text,
+                                    modifier = Modifier.padding(top = 2.dp),
+                                    color = Color.White
+                                )
                             }
                         }
                     )

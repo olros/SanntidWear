@@ -15,6 +15,7 @@
  */
 package com.olafros.wear.sanntid.theme
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -27,13 +28,14 @@ val Typography = Typography(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
         fontSize = 15.sp
-    )
-    /* Other default text styles to override
-    button = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.W500,
-        fontSize = 14.sp
     ),
+    title1 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.W700,
+        fontSize = 18.sp,
+        color = Color.White
+    ),
+    /* Other default text styles to override
     caption = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,

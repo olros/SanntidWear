@@ -8,7 +8,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -25,19 +24,24 @@ import kotlinx.coroutines.launch
 
 class FavouritesViewModel : ViewModel() {
 
+    var isLoading by mutableStateOf(true)
+        private set
     var data by mutableStateOf<StopPlacesListQuery.Data?>(null)
         private set
 
     fun load(stopPlaces: List<String>) {
         viewModelScope.launch {
-            val response =
-                apolloClient().query(
-                    StopPlacesListQuery(stopPlaces)
-                )
-                    .execute()
-            if (!response.hasErrors()) {
-                data = response.dataAssertNoErrors
+            if (stopPlaces.isNotEmpty()) {
+                val response =
+                    apolloClient().query(
+                        StopPlacesListQuery(stopPlaces)
+                    )
+                        .execute()
+                if (!response.hasErrors()) {
+                    data = response.dataAssertNoErrors
+                }
             }
+            isLoading = false
         }
     }
 }
@@ -61,10 +65,15 @@ fun Favourites(
         ) {
             item {
                 ListHeader {
-                    Text("Favoritter")
+                    Text("Favoritter", style = MaterialTheme.typography.title1)
                 }
             }
-            if (viewModel.data != null && viewModel.data?.stopPlaces?.isEmpty() == true) {
+            if (viewModel.isLoading) {
+                item {
+                    Text("Laster...", textAlign = TextAlign.Center)
+                }
+            }
+            if (!viewModel.isLoading && (viewModel.data == null || viewModel.data?.stopPlaces?.isEmpty() == true)) {
                 item {
                     Text("Du har ingen favoritter", textAlign = TextAlign.Center)
                 }

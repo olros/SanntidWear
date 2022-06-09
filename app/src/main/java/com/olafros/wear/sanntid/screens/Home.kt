@@ -31,7 +31,7 @@ fun Home(navController: NavHostController) {
         ) {
             item {
                 ListHeader {
-                    Text(text = "Sanntid")
+                    Text("Sanntid", style = MaterialTheme.typography.title1)
                 }
             }
             item {
@@ -61,15 +61,15 @@ fun Home(navController: NavHostController) {
             item {
                 Text(
                     "Data fra Entur",
-                    fontSize = 10.sp,
+                    fontSize = 12.sp,
                     color = Color.Gray,
                     modifier = Modifier.padding(top = 10.dp)
                 )
             }
             item {
                 Text(
-                    "©${Year.now().value} - @olros",
-                    fontSize = 10.sp,
+                    "sanntid.olafros.com",
+                    fontSize = 12.sp,
                     color = Color.Gray,
                     modifier = Modifier.padding(top = 10.dp)
                 )
