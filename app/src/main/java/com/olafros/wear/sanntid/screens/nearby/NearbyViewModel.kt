@@ -1,26 +1,17 @@
-package com.olafros.wear.sanntid.screens
+package com.olafros.wear.sanntid.screens.nearby
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
 import android.os.Looper
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import androidx.wear.compose.material.*
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.*
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
-import com.olafros.wear.sanntid.components.StopPlaceChip
 import com.olafros.wear.sanntid.components.StopPlaceChipData
 import com.olafros.wear.sanntid.utils.Constants
 import com.olafros.wear.sanntid.utils.Constants.ENTUR_API_URL
@@ -32,6 +23,9 @@ import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
 
+/**
+ * A result from a nearby-query
+ */
 data class NearbyResult(
     val id: String,
     val label: String,
@@ -42,10 +36,22 @@ data class NearbyResult(
 class NearbyViewModel : ViewModel() {
 
     private var fusedLocationClient: FusedLocationProviderClient? = null
+
+    /**
+     * The user's location, null until found
+     */
     var location by mutableStateOf<Location?>(null)
         private set
+
+    /**
+     * Whether the nearby StopPlaces have been loaded
+     */
     var isDataFetched by mutableStateOf(false)
         private set
+
+    /**
+     * The nearby StopPlaces
+     */
     var data = mutableStateListOf<StopPlaceChipData>()
         private set
 
@@ -75,6 +81,9 @@ class NearbyViewModel : ViewModel() {
         Looper.getMainLooper()
     )
 
+    /**
+     * Load the user's location
+     */
     @SuppressLint("MissingPermission")
     fun loadLocation(context: Context) {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
@@ -86,7 +95,10 @@ class NearbyViewModel : ViewModel() {
             .addOnFailureListener { it.printStackTrace() }
     }
 
-
+    /**
+     * Load StopPlaces around the given location
+     * @param location The location to find StopPlaces around
+     */
     fun loadNearbyStopPlaces(location: Location) {
         viewModelScope.launch {
             val request = Request.Builder()
@@ -137,77 +149,14 @@ class NearbyViewModel : ViewModel() {
     }
 }
 
+/**
+ * Formats metric distance. In metres if less then a kilometre, in kilometres else
+ * @param distance the distance in kilometres
+ */
 private fun formatDistance(distance: Double): String =
-    if (distance < 1) "${String.format("%.0f", distance * 1000)} m" else "${String.format("%.2f", distance)} km"
-
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-fun Nearby(navController: NavHostController, viewModel: NearbyViewModel = viewModel()) {
-    val context = LocalContext.current
-    val locationPermissionsState = rememberMultiplePermissionsState(
-        listOf(
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
+    if (distance < 1) "${String.format("%.0f", distance * 1000)} m" else "${
+        String.format(
+            "%.2f",
+            distance
         )
-    )
-
-    println(locationPermissionsState.allPermissionsGranted)
-
-    Scaffold {
-        ScalingLazyColumn(modifier = Modifier.fillMaxWidth()) {
-            item {
-                ListHeader {
-                    Text("I nærheten", style = MaterialTheme.typography.title1)
-                }
-            }
-            if (!locationPermissionsState.allPermissionsGranted) {
-                val allPermissionsRevoked =
-                    locationPermissionsState.permissions.size == locationPermissionsState.revokedPermissions.size
-                item {
-                    Text(
-                        if (!allPermissionsRevoked) {
-                            "For å få presise resultater må du også gi tilgang til din nøyaktige posisjon"
-                        } else "For å se holdeplasser i nærheten må du gi tilgang til posisjon. Posisjonen behandles kun på denne enheten og lagres ingen andre steder",
-                        textAlign = TextAlign.Center
-                    )
-                }
-                item {
-                    Button(
-                        onClick = { locationPermissionsState.launchMultiplePermissionRequest() },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Gi tilgang")
-                    }
-                }
-            } else if (viewModel.location == null) {
-                viewModel.loadLocation(context)
-                item {
-                    CircularProgressIndicator(strokeWidth = 4.dp)
-                }
-                item {
-                    Text("Laster posisjonen din", textAlign = TextAlign.Center)
-                }
-            } else if (!viewModel.isDataFetched) {
-                viewModel.loadNearbyStopPlaces(viewModel.location!!)
-                item {
-                    CircularProgressIndicator(strokeWidth = 4.dp)
-                }
-                item {
-                    Text("Leter etter holdeplasser i nærheten", textAlign = TextAlign.Center)
-                }
-            } else {
-                if (viewModel.data.isEmpty()) {
-                    item {
-                        Text(
-                            "Fant ingen holdeplasser i nærheten av deg",
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-                items(viewModel.data) {
-                    StopPlaceChip(navController, it)
-                }
-            }
-        }
-    }
-}
+    } km"

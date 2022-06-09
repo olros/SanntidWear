@@ -1,4 +1,4 @@
-package com.olafros.wear.sanntid.screens
+package com.olafros.wear.sanntid.screens.search
 
 import android.app.RemoteInput
 import android.content.Intent
@@ -13,76 +13,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.wear.compose.material.*
 import androidx.wear.input.RemoteInputIntentHelper
 import androidx.wear.input.wearableExtender
 import com.olafros.wear.sanntid.components.StopPlaceChip
-import com.olafros.wear.sanntid.components.StopPlaceChipData
-import com.olafros.wear.sanntid.utils.Constants
-import com.olafros.wear.sanntid.utils.Constants.ENTUR_API_URL
-import com.olafros.wear.sanntid.utils.toJSONObjectList
-import com.olafros.wear.sanntid.utils.toStringList
-import com.olafros.wear.sanntid.utils.venueMapper
-import kotlinx.coroutines.launch
-import okhttp3.*
-import org.json.JSONObject
-import java.io.IOException
 
-class SearchViewModel : ViewModel() {
-
-    var isLoading by mutableStateOf(false)
-    var data = mutableStateListOf<StopPlaceChipData>()
-        private set
-
-    fun search(input: String) {
-        viewModelScope.launch {
-            isLoading = true
-
-            val request = Request.Builder()
-                .url("$ENTUR_API_URL/geocoder/v1/autocomplete?lang=no&size=25&text=$input&layers=venue")
-                .header(Constants.ENTUR_HEADER_KEY, Constants.ENTUR_HEADER_VALUE)
-                .build()
-
-            OkHttpClient().newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    e.printStackTrace()
-                    isLoading = false
-                }
-
-                override fun onResponse(call: Call, response: Response) {
-                    response.use {
-                        if (!response.isSuccessful) throw IOException("Unexpected code $response")
-
-                        val json = JSONObject(response.body!!.string())
-                        val features = json.getJSONArray("features").toJSONObjectList()
-                        data.clear()
-                        features
-                            .map { it.getJSONObject("properties") }
-                            .forEach {
-
-                                data.add(
-                                    StopPlaceChipData(
-                                        it.getString("id"),
-                                        it.getString("label"),
-                                        it.getJSONArray("category").toStringList()
-                                            .map { cat -> venueMapper(cat) }.distinct().sorted()
-                                            .joinToString(", ")
-                                    )
-                                )
-                            }
-                        isLoading = false
-                    }
-                }
-            })
-        }
-    }
-}
-
-
+/**
+ * Search-view where the user's can find StopPlaces
+ */
 @Composable
 fun Search(
     navController: NavHostController,

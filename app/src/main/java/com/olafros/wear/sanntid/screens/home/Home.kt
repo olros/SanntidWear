@@ -1,4 +1,4 @@
-package com.olafros.wear.sanntid.screens
+package com.olafros.wear.sanntid.screens.home
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,6 +23,9 @@ import com.example.android.wearable.composestarter.R
 import com.olafros.wear.sanntid.utils.Constants
 import java.time.Year
 
+/**
+ * Home-view. Displays a list of available features
+ */
 @Composable
 fun Home(navController: NavHostController) {
     Scaffold {
@@ -37,9 +40,9 @@ fun Home(navController: NavHostController) {
             item {
                 Item(
                     navController,
-                    "Søk",
-                    rememberVectorPainter(Icons.Rounded.Search),
-                    Constants.Navigation.SEARCH
+                    "I nærheten",
+                    painterResource(R.drawable.ic_round_my_location_24),
+                    Constants.Navigation.NEARBY
                 )
             }
             item {
@@ -53,9 +56,9 @@ fun Home(navController: NavHostController) {
             item {
                 Item(
                     navController,
-                    "I nærheten",
-                    painterResource(R.drawable.ic_round_my_location_24),
-                    Constants.Navigation.NEARBY
+                    "Søk",
+                    rememberVectorPainter(Icons.Rounded.Search),
+                    Constants.Navigation.SEARCH
                 )
             }
             item {

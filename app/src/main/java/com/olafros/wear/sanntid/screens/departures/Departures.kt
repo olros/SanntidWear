@@ -1,6 +1,5 @@
-package com.olafros.wear.sanntid.screens
+package com.olafros.wear.sanntid.screens.departures
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
@@ -13,70 +12,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.wear.compose.foundation.CurvedTextStyle
 import androidx.wear.compose.material.*
 import com.olafros.wear.sanntid.DeparturesListQuery
-import com.olafros.wear.sanntid.apolloClient
 import com.olafros.wear.sanntid.utils.Constants
 import com.olafros.wear.sanntid.utils.SharedPreferencesManager
-import kotlinx.coroutines.*
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-const val PAGE_SIZE = 25
-
-class DeparturesViewModel : ViewModel() {
-
-    private var stopPlaceID by mutableStateOf<String?>(null)
-    private var numberOfDepartures by mutableStateOf(PAGE_SIZE)
-    var data by mutableStateOf<DeparturesListQuery.Data?>(null)
-        private set
-
-    fun updateStopPlaceID(id: String) {
-        stopPlaceID = id
-        load()
-    }
-
-    fun fetchMoreDepartures() {
-        numberOfDepartures += PAGE_SIZE
-    }
-
-    private fun load() {
-        if (stopPlaceID != null) {
-            viewModelScope.launch {
-                val response =
-                    apolloClient().query(
-                        DeparturesListQuery(
-                            stopPlaceID!!,
-                            numberOfDepartures
-                        )
-                    )
-                        .execute()
-                if (!response.hasErrors()) {
-                    data = response.dataAssertNoErrors
-                }
-            }
-        }
-    }
-
-    init {
-        viewModelScope.launch {
-            while (true) {
-                if (stopPlaceID != null) {
-                    load()
-                }
-                delay(10000L)
-            }
-        }
-    }
-}
-
+/**
+ * Displays a list of departures
+ */
 @Composable
 fun Departures(
     navController: NavHostController,
@@ -108,13 +58,13 @@ fun Departures(
             if (!isLoading) {
                 item {
                     ListHeader {
-                        Favourite(viewModel.data!!)
+                        FavouriteButton(viewModel.data!!)
                     }
                 }
             }
             if (!isLoading) {
                 items(viewModel.data!!.stopPlace!!.estimatedCalls) {
-                    Departure(it)
+                    DepartureChip(it)
                 }
             }
             if (!isLoading) {
@@ -144,8 +94,11 @@ fun Departures(
     }
 }
 
+/**
+ * DepartureChip displays a specific departure
+ */
 @Composable
-fun Departure(departure: DeparturesListQuery.EstimatedCall) {
+fun DepartureChip(departure: DeparturesListQuery.EstimatedCall) {
     val hasPlatform = (departure.quay?.publicCode ?: "") != ""
     Chip(
         modifier = Modifier
@@ -183,6 +136,9 @@ fun Departure(departure: DeparturesListQuery.EstimatedCall) {
     )
 }
 
+/**
+ * DepartureTime displays the time of the departure, formatted relatively
+ */
 @Composable
 fun DepartureTime(departure: DeparturesListQuery.EstimatedCall) {
     Text(
@@ -193,6 +149,9 @@ fun DepartureTime(departure: DeparturesListQuery.EstimatedCall) {
     )
 }
 
+/**
+ * Formats a departuretime into relative time `x min` if in less then 10 minutes. `HH:mm` if not
+ */
 private fun getFormattedRelativeTime(departureTime: String): String {
     val dateISOFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.UK)
     val currentTime: Date = Calendar.getInstance().time
@@ -209,15 +168,27 @@ private fun getFormattedRelativeTime(departureTime: String): String {
     }
 }
 
+/**
+ * FavouriteButton allows the user to save a StopPlace to its favourites
+ */
 @Composable
-fun Favourite(stopPlace: DeparturesListQuery.Data) {
+fun FavouriteButton(stopPlace: DeparturesListQuery.Data) {
     val stopPlaceId = stopPlace.stopPlace!!.id
-    val sharedPreferencesManager = SharedPreferencesManager(LocalContext.current, Constants.Favourites.KEY, Constants.Favourites.DEFAULT)
-    var isFavourite by remember { mutableStateOf(sharedPreferencesManager.getStringArray().contains(stopPlaceId)) }
+    val sharedPreferencesManager = SharedPreferencesManager(
+        LocalContext.current,
+        Constants.Favourites.KEY,
+        Constants.Favourites.DEFAULT
+    )
+    var isFavourite by remember {
+        mutableStateOf(
+            sharedPreferencesManager.getStringArray().contains(stopPlaceId)
+        )
+    }
 
     fun toggleFavourite() {
         if (isFavourite) {
-            sharedPreferencesManager.setStringArray(sharedPreferencesManager.getStringArray().filter { it != stopPlaceId })
+            sharedPreferencesManager.setStringArray(
+                sharedPreferencesManager.getStringArray().filter { it != stopPlaceId })
         } else {
             val currentFavourites = sharedPreferencesManager.getStringArray().toMutableList()
             currentFavourites.add(stopPlaceId)
@@ -231,7 +202,8 @@ fun Favourite(stopPlace: DeparturesListQuery.Data) {
         colors = ButtonDefaults.iconButtonColors()
     ) {
         Icon(
-            if (isFavourite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder, contentDescription = "Favoritt",
+            if (isFavourite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
+            contentDescription = "Favoritt",
             modifier = Modifier
                 .size(ButtonDefaults.SmallIconSize)
                 .wrapContentSize(align = Alignment.Center)

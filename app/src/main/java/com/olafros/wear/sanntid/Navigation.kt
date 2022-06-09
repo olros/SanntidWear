@@ -7,7 +7,11 @@ import androidx.wear.compose.material.Text
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
-import com.olafros.wear.sanntid.screens.*
+import com.olafros.wear.sanntid.screens.home.Home
+import com.olafros.wear.sanntid.screens.nearby.Nearby
+import com.olafros.wear.sanntid.screens.departures.Departures
+import com.olafros.wear.sanntid.screens.favourites.Favourites
+import com.olafros.wear.sanntid.screens.search.Search
 import com.olafros.wear.sanntid.utils.Constants
 
 /**
