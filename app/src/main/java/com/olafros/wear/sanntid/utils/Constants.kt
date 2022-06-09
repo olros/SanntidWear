@@ -21,6 +21,7 @@ object Constants {
      * Name of the required header when sending requests to the Entur API
      */
     const val ENTUR_HEADER_KEY = "ET-Client-Name"
+
     /**
      * Value of the required header when sending requests to the Entur API
      */

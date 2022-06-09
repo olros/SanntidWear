@@ -13,13 +13,17 @@ import androidx.wear.compose.material.*
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.olafros.wear.sanntid.components.StopPlaceChip
+import com.olafros.wear.sanntid.utils.rotaryScroll
 
 /**
  * Displays a list of nearby StopPlaces
  */
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun Nearby(navController: NavHostController, viewModel: NearbyViewModel = viewModel()) {
+fun Nearby(
+    navController: NavHostController, viewModel: NearbyViewModel = viewModel(),
+    scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()
+) {
     val context = LocalContext.current
     val locationPermissionsState = rememberMultiplePermissionsState(
         listOf(
@@ -28,8 +32,13 @@ fun Nearby(navController: NavHostController, viewModel: NearbyViewModel = viewMo
         )
     )
 
-    Scaffold {
-        ScalingLazyColumn(modifier = Modifier.fillMaxWidth()) {
+    Scaffold(positionIndicator = { PositionIndicator(scalingLazyListState = scalingLazyListState) }) {
+        ScalingLazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .rotaryScroll(scalingLazyListState),
+            state = scalingLazyListState,
+        ) {
             item {
                 ListHeader {
                     Text("I nærheten", style = MaterialTheme.typography.title1)

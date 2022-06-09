@@ -12,6 +12,7 @@ import com.olafros.wear.sanntid.components.StopPlaceChip
 import com.olafros.wear.sanntid.components.StopPlaceChipData
 import com.olafros.wear.sanntid.utils.Constants
 import com.olafros.wear.sanntid.utils.SharedPreferencesManager
+import com.olafros.wear.sanntid.utils.rotaryScroll
 import com.olafros.wear.sanntid.utils.transportModeMapper
 
 /**
@@ -20,7 +21,8 @@ import com.olafros.wear.sanntid.utils.transportModeMapper
 @Composable
 fun Favourites(
     navController: NavHostController,
-    viewModel: FavouritesViewModel = viewModel()
+    viewModel: FavouritesViewModel = viewModel(),
+    scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()
 ) {
 
     val sharedPreferencesManager = SharedPreferencesManager(
@@ -30,9 +32,12 @@ fun Favourites(
     )
     viewModel.load(sharedPreferencesManager.getStringArray())
 
-    Scaffold {
+    Scaffold(positionIndicator = { PositionIndicator(scalingLazyListState = scalingLazyListState) }) {
         ScalingLazyColumn(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .rotaryScroll(scalingLazyListState),
+            state = scalingLazyListState,
         ) {
             item {
                 ListHeader {

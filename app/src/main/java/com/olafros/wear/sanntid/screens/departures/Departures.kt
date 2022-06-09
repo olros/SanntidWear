@@ -19,6 +19,7 @@ import androidx.wear.compose.material.*
 import com.olafros.wear.sanntid.DeparturesListQuery
 import com.olafros.wear.sanntid.utils.Constants
 import com.olafros.wear.sanntid.utils.SharedPreferencesManager
+import com.olafros.wear.sanntid.utils.rotaryScroll
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -31,7 +32,8 @@ import java.util.*
 fun Departures(
     navController: NavHostController,
     id: String,
-    viewModel: DeparturesViewModel = viewModel()
+    viewModel: DeparturesViewModel = viewModel(),
+    scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()
 ) {
     viewModel.updateStopPlaceID(id)
 
@@ -41,6 +43,7 @@ fun Departures(
     val stopPlaceName = viewModel.data?.stopPlace?.name ?: "Laster..."
 
     Scaffold(
+        positionIndicator = { PositionIndicator(scalingLazyListState = scalingLazyListState) },
         timeText = {
             TimeText(
                 startLinearContent = {
@@ -53,7 +56,10 @@ fun Departures(
         }
     ) {
         ScalingLazyColumn(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .rotaryScroll(scalingLazyListState),
+            state = scalingLazyListState,
         ) {
             if (!isLoading) {
                 item {

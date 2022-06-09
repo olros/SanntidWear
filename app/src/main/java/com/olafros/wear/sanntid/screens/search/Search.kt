@@ -19,6 +19,7 @@ import androidx.wear.compose.material.*
 import androidx.wear.input.RemoteInputIntentHelper
 import androidx.wear.input.wearableExtender
 import com.olafros.wear.sanntid.components.StopPlaceChip
+import com.olafros.wear.sanntid.utils.rotaryScroll
 
 /**
  * Search-view where the user's can find StopPlaces
@@ -26,7 +27,8 @@ import com.olafros.wear.sanntid.components.StopPlaceChip
 @Composable
 fun Search(
     navController: NavHostController,
-    viewModel: SearchViewModel = viewModel()
+    viewModel: SearchViewModel = viewModel(),
+    scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()
 ) {
     var searchInput by remember { mutableStateOf("") }
 
@@ -42,9 +44,12 @@ fun Search(
             }
         }
 
-    Scaffold {
+    Scaffold(positionIndicator = { PositionIndicator(scalingLazyListState = scalingLazyListState) }) {
         ScalingLazyColumn(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .rotaryScroll(scalingLazyListState),
+            state = scalingLazyListState,
         ) {
             item {
                 ListHeader {

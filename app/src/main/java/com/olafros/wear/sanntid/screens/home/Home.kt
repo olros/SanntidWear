@@ -21,16 +21,22 @@ import androidx.navigation.NavHostController
 import androidx.wear.compose.material.*
 import com.example.android.wearable.composestarter.R
 import com.olafros.wear.sanntid.utils.Constants
-import java.time.Year
+import com.olafros.wear.sanntid.utils.rotaryScroll
 
 /**
  * Home-view. Displays a list of available features
  */
 @Composable
-fun Home(navController: NavHostController) {
-    Scaffold {
+fun Home(
+    navController: NavHostController,
+    scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()
+) {
+    Scaffold(positionIndicator = { PositionIndicator(scalingLazyListState = scalingLazyListState) }) {
         ScalingLazyColumn(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .rotaryScroll(scalingLazyListState),
+            state = scalingLazyListState,
         ) {
             item {
                 ListHeader {
