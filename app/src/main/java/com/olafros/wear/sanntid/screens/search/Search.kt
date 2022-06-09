@@ -53,7 +53,7 @@ fun Search(
                         label = { Text(if (searchInput == "") "Søk" else searchInput) },
                         onClick = {
                             val intent: Intent =
-                                RemoteInputIntentHelper.createActionRemoteInputIntent();
+                                RemoteInputIntentHelper.createActionRemoteInputIntent()
                             val remoteInputs: List<RemoteInput> = listOf(
                                 RemoteInput.Builder("search")
                                     .setLabel("Søk")
