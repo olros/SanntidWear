@@ -5,7 +5,11 @@ import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import org.json.JSONArray
 
-class SharedPreferencesManager(context: Context, private val key: String, private val default: String) {
+class SharedPreferencesManager(
+    context: Context,
+    private val key: String,
+    private val default: String
+) {
     private val preferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val editor: SharedPreferences.Editor = preferences.edit()
 
@@ -22,12 +26,5 @@ class SharedPreferencesManager(context: Context, private val key: String, privat
 
     fun get() = preferences.getString(key, default)
 
-    fun getStringArray(): List<String> {
-        val array = mutableListOf<String>()
-        val jsonArray = JSONArray(get())
-        (0 until jsonArray.length()).forEach {
-            array.add(jsonArray.getString(it))
-        }
-        return array
-    }
+    fun getStringArray(): List<String> = JSONArray(get()).toStringList()
 }

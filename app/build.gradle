@@ -71,6 +71,9 @@ dependencies {
     // Foundation is additive, so you can use the mobile version in your Wear OS app.
     implementation libs.wear.compose.foundation
 
+    // Permissions
+    implementation "com.google.accompanist:accompanist-permissions:0.24.10-beta"
+
     // Navigation
     implementation "androidx.wear.compose:compose-navigation:1.0.0-beta03"
 
@@ -83,6 +86,9 @@ dependencies {
 
     // Apollo GraphQL-client
     implementation "com.apollographql.apollo3:apollo-runtime:3.3.0"
+
+    // Google Play services
+    implementation 'com.google.android.gms:play-services-location:20.0.0'
 
     // Testing
     testImplementation libs.junit

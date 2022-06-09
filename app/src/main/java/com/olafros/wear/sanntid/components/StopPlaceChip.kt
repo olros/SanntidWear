@@ -12,21 +12,23 @@ import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.Text
 import com.olafros.wear.sanntid.utils.Constants
 
+data class StopPlaceChipData(val id: String, val label: String, val secondaryLabel: String?)
+
 @Composable
-fun StopPlaceChip(navController: NavHostController, id: String, label: String, secondaryLabel: String?) {
+fun StopPlaceChip(navController: NavHostController, data: StopPlaceChipData) {
     Chip(
         modifier = Modifier
             .fillMaxWidth(),
-        onClick = { navController.navigate("${Constants.Navigation.DEPARTURES}/$id") },
+        onClick = { navController.navigate("${Constants.Navigation.DEPARTURES}/${data.id}") },
         enabled = true,
-        secondaryLabel = { if (secondaryLabel != null) Text(secondaryLabel) },
+        secondaryLabel = { if (data.secondaryLabel != null) Text(data.secondaryLabel) },
         label = {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    label,
+                    data.label,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     fontSize = 13.sp

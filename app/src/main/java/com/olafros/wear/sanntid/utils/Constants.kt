@@ -8,6 +8,7 @@ object Constants {
         const val FAVOURITES = "favourites"
         const val NEARBY = "nearby"
     }
+    const val ENTUR_API_URL = "https://api.entur.io"
     const val ETClientName = "com_olafros-wear_sanntid"
     object Favourites {
         const val KEY = "FAVOURITE_STOP_PLACES"

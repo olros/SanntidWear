@@ -21,6 +21,7 @@ import androidx.navigation.NavHostController
 import androidx.wear.compose.material.*
 import com.example.android.wearable.composestarter.R
 import com.olafros.wear.sanntid.utils.Constants
+import java.time.Year
 
 @Composable
 fun Home(navController: NavHostController) {
@@ -54,13 +55,20 @@ fun Home(navController: NavHostController) {
                     navController,
                     "I nærheten",
                     painterResource(R.drawable.ic_round_my_location_24),
-                    null
-                    // Constants.Navigation.NEARBY
+                    Constants.Navigation.NEARBY
                 )
             }
             item {
                 Text(
-                    "All data hentes fra Entur",
+                    "Data fra Entur",
+                    fontSize = 10.sp,
+                    color = Color.Gray,
+                    modifier = Modifier.padding(top = 10.dp)
+                )
+            }
+            item {
+                Text(
+                    "©${Year.now().value} - @olros",
                     fontSize = 10.sp,
                     color = Color.Gray,
                     modifier = Modifier.padding(top = 10.dp)

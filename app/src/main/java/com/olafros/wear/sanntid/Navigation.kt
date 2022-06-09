@@ -7,10 +7,7 @@ import androidx.wear.compose.material.Text
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
-import com.olafros.wear.sanntid.screens.Departures
-import com.olafros.wear.sanntid.screens.Favourites
-import com.olafros.wear.sanntid.screens.Home
-import com.olafros.wear.sanntid.screens.Search
+import com.olafros.wear.sanntid.screens.*
 import com.olafros.wear.sanntid.utils.Constants
 
 @Composable
@@ -28,6 +25,9 @@ fun Navigation() {
         }
         composable(Constants.Navigation.FAVOURITES) {
             Favourites(navController = navController)
+        }
+        composable(Constants.Navigation.NEARBY) {
+            Nearby(navController = navController)
         }
         composable(
             route = "${Constants.Navigation.DEPARTURES}/{Id}",

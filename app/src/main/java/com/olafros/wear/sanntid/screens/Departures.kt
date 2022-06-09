@@ -189,7 +189,6 @@ fun DepartureTime(departure: DeparturesListQuery.EstimatedCall) {
         if (departure.expectedDepartureTime is String) {
             "${if (departure.realtime) "" else "ca. "}${getFormattedRelativeTime(departure.expectedDepartureTime)}"
         } else "--:--",
-//        color = MaterialTheme.colors.onSecondary,
         fontSize = 13.sp
     )
 }
@@ -200,7 +199,6 @@ private fun getFormattedRelativeTime(departureTime: String): String {
     return try {
         val endDate = dateISOFormat.parse(departureTime)
         val minutesUntilDeparture = ((endDate!!.time - currentTime.time) / 60000).toInt()
-        Log.d("format", "Min: $minutesUntilDeparture")
         if (minutesUntilDeparture == 0) "Nå" else if (minutesUntilDeparture < 10) "$minutesUntilDeparture min" else {
             val targetFormat: DateFormat = SimpleDateFormat("HH:mm", Locale.UK)
             targetFormat.format(endDate)

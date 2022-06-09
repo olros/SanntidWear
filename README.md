@@ -1,39 +1,22 @@
-Compose for Wear OS Starter Sample
-==================================
-Demonstrates a simple "Hello, World" starter project for using Compose with Wear OS.
+# Sanntid - Wear OS
 
-Introduction
-------------
+Wear OS-applikasjon som viser avgangstider fra holdeplasser i Norge. Data hentes fra Entur sitt api.
 
-Simple "Hello, World" app meant as a starting point for a new project using
-Compose for Wear OS.
+## Funksjonalitet
+    
+- **Søk** - Søk etter spesifikke holdeplasser
+- **Favoritter** - Marker holdeplasser som favoritter for å raskt finne dem senere
+- **I nærheten** - Se en liste over holdeplasser i nærheten av deg
+- **Avgangsliste** - Liste med kommende avganger fra en holdeplass med "evig skrolling". Plattform for avgang vises om det er relevant
 
-Displays only a centered [Text] composable, and the actual text varies based on the shape of the
-device (round vs. square/rectangular).
+## Bilder
 
-For more information on composable options in Compose for Wear OS, check out our
-[documentation](https://developer.android.com/reference/kotlin/androidx/wear/compose/material/package-summary.html).
+![Hjemskjerm](/screenshots/home.png "Hjemskjerm")
 
-Screenshots
------------
+![Avganger](/screenshots/departures.png "Avganger")
 
-<img src="screenshots/round_hello.png" height="372" alt="Round Screenshot"/>
+![Søk](/screenshots/search.png "Søk")
 
-<img src="screenshots/square_hello.png" height="349" alt="Square Screenshot"/> 
+![Favoritter](/screenshots/favourites.png "Favoritter")
 
-
-Getting Started
----------------
-
-This sample uses the Gradle build system. To build this project,
-use the "gradlew build" command or use "Import Project" in Android Studio.
-
-Support
--------
-
-- Stack Overflow: http://stackoverflow.com/questions/tagged/android
-
-If you've found an error in this sample, please [create an issue](https://github.com/android/wear-os-samples/issues/new).
-
-Patches are encouraged, and may be submitted by forking this project and
-submitting a pull request through GitHub. Please see CONTRIBUTING.md for more details.
+![I nærheten](/screenshots/nearby.png "I nærheten")

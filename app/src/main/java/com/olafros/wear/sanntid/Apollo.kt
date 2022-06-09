@@ -3,6 +3,7 @@ package com.olafros.wear.sanntid
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.okHttpClient
 import com.olafros.wear.sanntid.utils.Constants
+import com.olafros.wear.sanntid.utils.Constants.ENTUR_API_URL
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -29,7 +30,7 @@ fun apolloClient(): ApolloClient {
         .build()
 
     instance = ApolloClient.Builder()
-        .serverUrl("https://api.entur.io/journey-planner/v3/graphql")
+        .serverUrl("$ENTUR_API_URL/journey-planner/v3/graphql")
         .okHttpClient(okHttpClient)
         .build()
 

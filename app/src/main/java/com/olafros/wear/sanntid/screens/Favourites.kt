@@ -17,6 +17,7 @@ import androidx.wear.compose.material.*
 import com.olafros.wear.sanntid.StopPlacesListQuery
 import com.olafros.wear.sanntid.apolloClient
 import com.olafros.wear.sanntid.components.StopPlaceChip
+import com.olafros.wear.sanntid.components.StopPlaceChipData
 import com.olafros.wear.sanntid.utils.Constants
 import com.olafros.wear.sanntid.utils.SharedPreferencesManager
 import com.olafros.wear.sanntid.utils.transportModeMapper
@@ -65,20 +66,19 @@ fun Favourites(
             }
             if (viewModel.data != null && viewModel.data?.stopPlaces?.isEmpty() == true) {
                 item {
-                    Text(
-                        "Du har ikke valgt noen favoritter",
-                        fontSize = 12.sp,
-                        textAlign = TextAlign.Center
-                    )
+                    Text("Du har ingen favoritter", textAlign = TextAlign.Center)
                 }
             }
             items(viewModel.data?.stopPlaces ?: listOf()) {
                 StopPlaceChip(
                     navController,
-                    it!!.id,
-                    it.name,
-                    it.transportMode!!.map { mode -> transportModeMapper(mode!!) }.distinct()
-                        .joinToString(", ")
+                    StopPlaceChipData(
+                        it!!.id,
+                        it.name,
+                        it.transportMode!!.map { mode -> transportModeMapper(mode!!) }.distinct()
+                            .sorted()
+                            .joinToString(", ")
+                    )
                 )
             }
         }
