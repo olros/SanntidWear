@@ -4,10 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
 import android.os.Looper
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.*
@@ -118,8 +115,7 @@ class NearbyViewModel : ViewModel() {
 
                         val json = JSONObject(response.body!!.string())
                         val features = json.getJSONArray("features").toJSONObjectList()
-                        data.clear()
-                        features
+                        data = features
                             .map { it.getJSONObject("properties") }
                             .map {
                                 NearbyResult(
@@ -131,15 +127,13 @@ class NearbyViewModel : ViewModel() {
                                 )
                             }
                             .sortedBy { it.distance }
-                            .forEach {
-                                data.add(
-                                    StopPlaceChipData(
-                                        it.id, it.label, "${formatDistance(it.distance)} - ${
-                                            it.categories.joinToString(", ")
-                                        }"
-                                    )
+                            .map {
+                                StopPlaceChipData(
+                                    it.id, it.label, "${formatDistance(it.distance)} - ${
+                                        it.categories.joinToString(", ")
+                                    }"
                                 )
-                            }
+                            }.toMutableStateList()
 
                         isDataFetched = true
                     }

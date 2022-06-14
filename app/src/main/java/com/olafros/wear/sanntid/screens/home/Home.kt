@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.wear.compose.material.*
-import com.example.android.wearable.composestarter.R
+import com.olafros.wear.sanntid.R
 import com.olafros.wear.sanntid.utils.Constants
 import com.olafros.wear.sanntid.utils.rotaryScroll
 
