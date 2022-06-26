@@ -7,6 +7,7 @@ object Constants {
     object Navigation {
         const val HOME = "home"
         const val DEPARTURES = "departures"
+        const val SERVICE_JOURNEY = "service-journey"
         const val SEARCH = "search"
         const val FAVOURITES = "favourites"
         const val NEARBY = "nearby"

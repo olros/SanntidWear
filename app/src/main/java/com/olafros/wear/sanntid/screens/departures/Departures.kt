@@ -17,13 +17,10 @@ import androidx.navigation.NavHostController
 import androidx.wear.compose.foundation.CurvedTextStyle
 import androidx.wear.compose.material.*
 import com.olafros.wear.sanntid.DeparturesListQuery
+import com.olafros.wear.sanntid.components.DepartureTime
 import com.olafros.wear.sanntid.utils.Constants
 import com.olafros.wear.sanntid.utils.SharedPreferencesManager
 import com.olafros.wear.sanntid.utils.rotaryScroll
-import java.text.DateFormat
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
 
 /**
  * Displays a list of departures
@@ -31,11 +28,11 @@ import java.util.*
 @Composable
 fun Departures(
     navController: NavHostController,
-    id: String,
+    stopPlaceID: String,
     viewModel: DeparturesViewModel = viewModel(),
     scalingLazyListState: ScalingLazyListState = rememberScalingLazyListState()
 ) {
-    viewModel.updateStopPlaceID(id)
+    viewModel.updateStopPlaceID(stopPlaceID)
 
     val isLoading = viewModel.data?.stopPlace == null
 
@@ -70,7 +67,7 @@ fun Departures(
             }
             if (!isLoading) {
                 items(viewModel.data!!.stopPlace!!.estimatedCalls) {
-                    DepartureChip(it)
+                    DepartureChip(navController, it, stopPlaceID)
                 }
             }
             if (!isLoading) {
@@ -104,13 +101,13 @@ fun Departures(
  * DepartureChip displays a specific departure
  */
 @Composable
-fun DepartureChip(departure: DeparturesListQuery.EstimatedCall) {
+fun DepartureChip(navController: NavHostController, departure: DeparturesListQuery.EstimatedCall, stopPlaceID: String) {
     val hasPlatform = (departure.quay?.publicCode ?: "") != ""
     Chip(
         modifier = Modifier
             .fillMaxWidth()
             .height(if (hasPlatform) 52.dp else 42.dp),
-        onClick = {},
+        onClick = { navController.navigate("${Constants.Navigation.SERVICE_JOURNEY}/${departure.serviceJourney?.id}/$stopPlaceID") },
         enabled = true,
         secondaryLabel = { if (hasPlatform) Text("Plattform ${departure.quay?.publicCode}") },
         label = {
@@ -127,7 +124,10 @@ fun DepartureChip(departure: DeparturesListQuery.EstimatedCall) {
                         .padding(end = 4.dp),
                     fontSize = 13.sp
                 )
-                DepartureTime(departure)
+                DepartureTime(
+                    departure.expectedDepartureTime,
+                    departure.realtime
+                )
             }
         },
         icon = {
@@ -140,38 +140,6 @@ fun DepartureChip(departure: DeparturesListQuery.EstimatedCall) {
             )
         }
     )
-}
-
-/**
- * DepartureTime displays the time of the departure, formatted relatively
- */
-@Composable
-fun DepartureTime(departure: DeparturesListQuery.EstimatedCall) {
-    Text(
-        if (departure.expectedDepartureTime is String) {
-            "${if (departure.realtime) "" else "ca. "}${getFormattedRelativeTime(departure.expectedDepartureTime)}"
-        } else "--:--",
-        fontSize = 13.sp
-    )
-}
-
-/**
- * Formats a departuretime into relative time `x min` if in less then 10 minutes. `HH:mm` if not
- */
-private fun getFormattedRelativeTime(departureTime: String): String {
-    val dateISOFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.UK)
-    val currentTime: Date = Calendar.getInstance().time
-    return try {
-        val endDate = dateISOFormat.parse(departureTime)
-        val minutesUntilDeparture = ((endDate!!.time - currentTime.time) / 60000).toInt()
-        if (minutesUntilDeparture == 0) "Nå" else if (minutesUntilDeparture < 10) "$minutesUntilDeparture min" else {
-            val targetFormat: DateFormat = SimpleDateFormat("HH:mm", Locale.UK)
-            targetFormat.format(endDate)
-        }
-    } catch (e: ParseException) {
-        e.printStackTrace()
-        "--:--"
-    }
 }
 
 /**

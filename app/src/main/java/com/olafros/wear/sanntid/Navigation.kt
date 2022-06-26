@@ -12,6 +12,7 @@ import com.olafros.wear.sanntid.screens.favourites.Favourites
 import com.olafros.wear.sanntid.screens.home.Home
 import com.olafros.wear.sanntid.screens.nearby.Nearby
 import com.olafros.wear.sanntid.screens.search.Search
+import com.olafros.wear.sanntid.screens.serviceJourney.ServiceJourney
 import com.olafros.wear.sanntid.utils.Constants
 
 /**
@@ -42,7 +43,19 @@ fun Navigation() {
         ) { backStackEntry ->
             val itemId = backStackEntry.arguments?.getString("Id")
             if (itemId != null) {
-                Departures(navController = navController, id = itemId)
+                Departures(navController = navController, stopPlaceID = itemId)
+            } else {
+                Text("Noe gikk galt")
+            }
+        }
+        composable(
+            route = "${Constants.Navigation.SERVICE_JOURNEY}/{serviceJourneyId}/{stopPlaceId}",
+            arguments = listOf(navArgument("serviceJourneyId") { type = NavType.StringType }, navArgument("stopPlaceId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val serviceJourneyId = backStackEntry.arguments?.getString("serviceJourneyId")
+            val stopPlaceId = backStackEntry.arguments?.getString("stopPlaceId")
+            if (serviceJourneyId != null) {
+                ServiceJourney(navController = navController, serviceJourneyId = serviceJourneyId, stopPlaceId = stopPlaceId)
             } else {
                 Text("Noe gikk galt")
             }

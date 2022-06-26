@@ -61,7 +61,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-permissions:0.24.10-beta"
 
     // Navigation
-    implementation "androidx.wear.compose:compose-navigation:1.0.0-beta03"
+    implementation "androidx.wear.compose:compose-navigation:1.0.0-rc02"
 
     // State
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
@@ -69,7 +69,7 @@ dependencies {
     implementation 'androidx.wear:wear-input:1.2.0-alpha02'
 
     // Icons
-    implementation "androidx.compose.material:material-icons-core:1.2.0-beta03"
+    implementation "androidx.compose.material:material-icons-core:1.2.0-rc02"
 
     // Apollo GraphQL-client
     implementation "com.apollographql.apollo3:apollo-runtime:3.3.0"

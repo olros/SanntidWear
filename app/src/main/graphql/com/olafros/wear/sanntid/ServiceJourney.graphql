@@ -1,0 +1,22 @@
+query ServiceJourney($id: String!) {
+  serviceJourney(id: $id) {
+    id
+    line {
+      publicCode
+      name
+      id
+    }
+    estimatedCalls {
+      quay {
+        stopPlace {
+          name
+          parent {
+            id
+          }
+        }
+      }
+      expectedDepartureTime
+      realtime
+    }
+  }
+}
