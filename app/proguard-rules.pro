@@ -33,3 +33,25 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+# OkHttp
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.** { *; }
+-dontwarn okhttp3.**
+-dontwarn okio.**
+
+# BouncyCastle (if you're using it or a library that uses it, like OkHttp's BouncyCastlePlatform)
+-dontwarn org.bouncycastle.**
+-keep class org.bouncycastle.** { *; }
+-keep interface org.bouncycastle.** { *; }
+
+# Conscrypt (if you're using it or a library that uses it, like OkHttp's ConscryptPlatform)
+-dontwarn org.conscrypt.**
+-keep class org.conscrypt.** { *; }
+-keep interface org.conscrypt.** { *; }
+
+# OpenJSSE (if you're using it or a library that uses it, like OkHttp's OpenJSSEPlatform)
+-dontwarn org.openjsse.**
+-keep class org.openjsse.** { *; }
+-keep interface org.openjsse.** { *; }

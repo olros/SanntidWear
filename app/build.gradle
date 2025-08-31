@@ -1,18 +1,20 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id("com.apollographql.apollo3").version("3.3.0")
+    id("com.apollographql.apollo3").version("3.8.6")
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
-    compileSdk 32
+    namespace 'com.olafros.wear.sanntid'
+    compileSdkVersion 36
 
     defaultConfig {
         applicationId "com.olafros.wear.sanntid"
-        minSdk 26
-        targetSdk 30
-        versionCode 3
-        versionName "1.2"
+        minSdk 35
+        targetSdk 35
+        versionCode 5
+        versionName "2"
     }
 
     buildTypes {
@@ -30,7 +32,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
-        useIR = true
         freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
     }
     buildFeatures {
@@ -57,6 +58,9 @@ dependencies {
     // Foundation is additive, so you can use the mobile version in your Wear OS app.
     implementation libs.wear.compose.foundation
 
+    // Splashscreen
+    implementation "androidx.core:core-splashscreen:1.2.0-rc01"
+
     // Permissions
     implementation "com.google.accompanist:accompanist-permissions:0.24.10-beta"
 
@@ -72,7 +76,7 @@ dependencies {
     implementation "androidx.compose.material:material-icons-core:1.2.0-rc02"
 
     // Apollo GraphQL-client
-    implementation "com.apollographql.apollo3:apollo-runtime:3.3.0"
+    implementation "com.apollographql.apollo3:apollo-runtime:3.8.6"
 
     // Google Play services
     implementation 'com.google.android.gms:play-services-location:20.0.0'
